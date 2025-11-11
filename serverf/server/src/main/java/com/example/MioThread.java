@@ -33,81 +33,81 @@ public class MioThread extends Thread {
     @Override
     public void run() {
 
-        String utente = ""; // memorizza il nome dell'utente connesso
+        String utente = "";      // memorizza il nome dell'utente connesso
 
-        out.println("WELCOME"); // Messaggio di benvenuto inviato al client
+        out.println("WELCOME"); 
 
-        boolean success = false; // Flag per verificare se il login è avvenuto con successo
+        boolean success = false; // login è avvenuto con successo
 
-        // Ciclo che continua finché l'utente non effettua il login corretto
+        
         while (!success) {
 
             String cmd = "";
             try {
-                cmd = in.readLine(); // Legge una riga inviata dal client
+                cmd = in.readLine(); // Legge client
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
-            if (cmd == null) // Se il client chiude la connessione
+            if (cmd == null) 
                 break;
 
-            // Divide il comando in due parti: comando e argomento (es. "LOGIN Luca")
+            //"LOGIN Luca")
             String[] messaggio = cmd.split(" ", 2);
 
-            // Controlla che il comando sia "LOGIN" con un nome valido
+            // "LOGIN" con un nome valido
             if (messaggio.length == 2 && messaggio[0].equals("LOGIN") || !(messaggio[1] == "")) {
               
                 success = true; // Presume login riuscito
                 utente = messaggio[1]; // Salva il nome utente
 
-                // Controlla se l’utente è già connesso
+                
                 for (String ut : utentiConn) {
                     if (messaggio[1].equals(ut)) {
-                        success = false; // Login fallito perché già in uso
-                        out.println("ERR USERINUSE"); // Messaggio di errore al client
+                        success = false;
+                        out.println("ERR USERINUSE"); 
                         break;
                     }
                 }
             } else
-                out.println("ERR LOGINREQUIRED"); // Messaggio se il comando non è valido
+                out.println("ERR LOGINREQUIRED"); 
         }
 
         // Aggiunge l’utente alla lista di utenti connessi
         utentiConn.add(utente);
-        out.println("OK"); // Conferma che il login è riuscito
+        out.println("OK"); 
 
-        // Array per contenere comando e argomento
+        // comando e argomento
         String[] command = { "", "" };
 
-        // Ciclo principale che gestisce i comandi dopo il login
+        //  comandi dopo il login
         while (true) {
             String cmd = "";
             try {
-                cmd = in.readLine(); // Legge un comando dal client
+                cmd = in.readLine(); // Legge c client
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
-            // Divide il comando ricevuto (es. "BUY", "N", "QUIT", ecc.)
+            
             command = cmd.split(" ", 2);
 
-            // Se il client vuole disconnettersi
+            // client  disconnettersi
             if (command[0].equals("QUIT")) {
-                out.println("BYE"); // Risponde con BYE
+                out.println("BYE"); 
                 try {
-                    socket.close(); // Chiude la connessione
+                    socket.close(); 
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                break; // Esce dal ciclo
+                break;
             }
 
             // Gestisce i vari comandi
             switch (command[0]) {
 
                 case "N":
-                    // Comando per mostrare la disponibilità dei biglietti
+                    //  disponibilità dei biglietti
                     out.println("AVAIL Gold:" + disponibilitaGold + " PIT:" + disponibilitaPit
                             + " Parterre:" + disponibilitaParterre);
                     break;
@@ -117,7 +117,7 @@ public class MioThread extends Thread {
 
                     String com = "";
                     try {
-                        com = in.readLine(); // Legge il tipo di biglietto e la quantità
+                        com = in.readLine(); // legge il tipo e quantità
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -125,7 +125,7 @@ public class MioThread extends Thread {
                     // Divide il comando (es. "Gold 2")
                     String[] buy = com.split(" ", 2);
 
-                    // Controlla che sia scritto correttamente
+                    // C scritto correttamente
                     if (buy[1].equals("")) {
                         out.println("ERR SYNTAX");
                         break;
@@ -138,12 +138,12 @@ public class MioThread extends Thread {
                     switch (buy[0]) {
 
                         case "Gold":
-                            // Se i biglietti richiesti sono più di quelli disponibili → errore
+                            
                             if (quantita > disponibilitaGold)
                                 out.println("KO");
                             else
                                 disponibilitaGold -= quantita; // Riduce la disponibilità
-                                out.println("OK"); // Conferma l’acquisto
+                                out.println("OK"); 
                             break;
 
                         case "Pit":
@@ -166,7 +166,7 @@ public class MioThread extends Thread {
                     break;
 
                 default:
-                    // Se il comando non è riconosciuto
+                    
                     out.println("ERR SYNTAX");
                     break;
             }
